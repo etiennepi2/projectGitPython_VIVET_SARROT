@@ -1,3 +1,5 @@
+import numpy as np
+import pandas as pd 
 
 class Order:
     def __init__(self, price, quantity , buy_sell, nb_id ):
@@ -24,8 +26,9 @@ class Book:
     def __init__(self, name):
         self.name = name
         self.numberorder = 0
-        self.matriceorder = []
+        self.matriceorder =  []
         self.executeorder = []
+        self.matriceorderpanda = pd.DataFrame({'ID':[],'TYPE':[],'PRICE':[],'QUANTITY':[]})
        
     def insert_buy(self,number,price):
         print("--------------------------------")
@@ -48,6 +51,7 @@ class Book:
             print(self.executeorder[i])
         self.executeorder = []
         print( "Book on " + self.name)
+        self.actualise_dataframe()
         print(self)
            
     def insert_sell(self,number,price):
@@ -73,6 +77,7 @@ class Book:
             print(self.executeorder[i])
         self.executeorder = []
         print( "Book on " + self.name)
+        self.actualise_dataframe()
         print(self)
    
     def modifications(self):
@@ -99,9 +104,14 @@ class Book:
                             self.executeorder.append("Excecute "+str(self.matriceorder[i+1].quantity)+" at " + str(self.matriceorder[i].price) +" on "+self.name)
                             self.matriceorder.remove(self.matriceorder[i+1])
                             self.modifications()
-                        
-    def __str__(self):
-        res =""
+
+    def actualise_dataframe(self):
+        self.matriceorderpanda = pd.DataFrame({'ID':[],'TYPE':[],'PRICE':[],'QUANTITY':[]})
         for i in range(len(self.matriceorder)):
-            res += str(self.matriceorder[i]) + "\n"
-        return res
+            if(self.matriceorder[i].buy_sell == 0):
+                new_row = {'ID':self.matriceorder[i].nb_id,'TYPE':'BUY','PRICE':self.matriceorder[i].price,'QUANTITY':self.matriceorder[i].quantity}
+            else:
+                new_row = {'ID':self.matriceorder[i].nb_id,'TYPE':'SELL','PRICE':self.matriceorder[i].price,'QUANTITY':self.matriceorder[i].quantity}
+            self.matriceorderpanda = self.matriceorderpanda.append(new_row, True)
+    def __str__(self):
+        return str(self.matriceorderpanda)
