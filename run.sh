@@ -1,4 +1,4 @@
-FILE=/home/ubuntu/Project/projectGitPython_VIVET_SARROT/.myenv
+FILE=.myenv/
 if [ ! -e "$FILE" ]; then
 	python3 -m venv .myenv
 	echo "environnement crée"
